@@ -1,8 +1,8 @@
 {
-  "name": "material-kit-react",
-  "author": "Devias IO",
+  "name": "guide_driver",
+  "author": "Amraa",
   "licence": "MIT",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "private": false,
   "scripts": {
     "dev": "next",
