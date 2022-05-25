@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
 import { format } from "date-fns";
@@ -18,9 +18,14 @@ import {
 } from "@mui/material";
 import { getInitials } from "../../utils/get-initials";
 import { TransferCard } from "./transfer-card";
+import { useBill } from "src/context/BillContext";
 
-export const TransferList = ({ customers, ...rest }) => {
+export const TransferList = ({ customers }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
+  const { promotions, getPromotions, query } = useBill();
+  useEffect(() => {
+    query && getPromotions(query);
+  }, [query]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
@@ -65,25 +70,11 @@ export const TransferList = ({ customers, ...rest }) => {
   };
 
   return (
-    // <Card {...rest}>
     <PerfectScrollbar>
-      <TransferCard />
-      <TransferCard />
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
-        <Pagination
-          component="div"
-          variant="outlined"
-          color="primary"
-          count={20}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleLimitChange}
-          page={page}
-          rowsPerPage={limit}
-          rowsPerPageOptions={[5, 10, 25]}
-        />
-      </Box>
+      {promotions &&
+        promotions.data?.length > 0 &&
+        promotions.data.map((el) => <TransferCard data={el} />)}
     </PerfectScrollbar>
-    // </Card>
   );
 };
 

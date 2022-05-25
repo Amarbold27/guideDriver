@@ -10,7 +10,7 @@ export const TotalProfit = (props) => (
             Олгосон нийт дүн
           </Typography>
           <Typography color="textPrimary" variant="h4">
-            $23k
+            ₮23k
           </Typography>
         </Grid>
         <Grid item>

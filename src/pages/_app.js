@@ -7,6 +7,8 @@ import { ThemeProvider } from "@mui/material/styles";
 import { createEmotionCache } from "../utils/create-emotion-cache";
 import { theme } from "../theme";
 import { AuthProvider } from "src/context/auth-context";
+import { ToastContainer } from "react-toastify";
+import { LoadingProvider } from "src/context/LoadingContext";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -17,17 +19,20 @@ const App = (props) => {
 
   return (
     <CacheProvider value={emotionCache}>
+      <ToastContainer theme="colored" />
       <Head>
         <title>Хөтөч жолооч</title>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <ThemeProvider theme={theme}>
-          <AuthProvider>
-            <CssBaseline />
-            {getLayout(<Component {...pageProps} />)}
-          </AuthProvider>
-        </ThemeProvider>
+        <LoadingProvider>
+          <ThemeProvider theme={theme}>
+            <AuthProvider>
+              <CssBaseline />
+              {getLayout(<Component {...pageProps} />)}
+            </AuthProvider>
+          </ThemeProvider>
+        </LoadingProvider>
       </LocalizationProvider>
     </CacheProvider>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
 import { format } from "date-fns";
@@ -17,11 +17,17 @@ import {
 } from "@mui/material";
 import { getInitials } from "../../utils/get-initials";
 import { MovableCard } from "./movable-card";
+import { useBill } from "src/context/BillContext";
 
 export const MovableList = ({ customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  const { promotions, getPromotions, query } = useBill();
+
+  useEffect(() => {
+    query && getPromotions(query);
+  }, [query]);
 
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
@@ -66,8 +72,9 @@ export const MovableList = ({ customers, ...rest }) => {
   return (
     // <Card {...rest}>
     <PerfectScrollbar>
-      <MovableCard />
-      <MovableCard />
+      {promotions &&
+        promotions.data?.length > 0 &&
+        promotions.data.map((el) => <MovableCard data={el} />)}
     </PerfectScrollbar>
     // </Card>
   );

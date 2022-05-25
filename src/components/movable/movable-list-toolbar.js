@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -20,14 +20,34 @@ import { Search as SearchIcon } from "../../icons/search";
 import { Upload as UploadIcon } from "../../icons/upload";
 import { Download as DownloadIcon } from "../../icons/download";
 import { DateRangePicker } from "@mui/lab";
+import { useBill } from "src/context/BillContext";
 export const MovableListToolbar = (props) => {
   const [dateRange, setDateRange] = useState([null, null]);
-  const [status, setStatus] = useState({
-    new: false,
-    aborted: false,
-    less: false,
-  });
-  console.log(status);
+  const { setQuery } = useBill();
+  const [value, setValue] = useState("ALL");
+  useEffect(() => {
+    setQuery(setQueryParam());
+  }, [value]);
+  const setQueryParam = () => {
+    let param = "?";
+    switch (value) {
+      case "ORGANIZATION":
+        param = param + "organization=ORGANIZATION";
+        break;
+      case "ALL":
+        break;
+      case "INDIVIDUAL":
+        param = param + "organization=INDIVIDUAL";
+        break;
+    }
+    if (value === "ALL") {
+      param = "?status=TRANSFERED";
+    } else param = param + "&status=TRANSFERED";
+    return param;
+  };
+  const onChange = (e) => {
+    setValue(e.target.value);
+  };
   return (
     <Box {...props}>
       <Box
@@ -40,22 +60,24 @@ export const MovableListToolbar = (props) => {
         }}
       >
         <Typography sx={{ m: 1 }} variant="h4">
-          Шилжүүлсэн
+          Шилжүүлэх
         </Typography>
         {/* <Box sx={{ m: 1, display: "flex" }}>
-          <Button
-            color="primary"
-            variant="contained"
-            sx={{ ml: 1 }}
-            startIcon={
-              <SvgIcon color="white" fontSize="small">
-                <SearchIcon />
-              </SvgIcon>
-            }
-            size="small"
-          >
-            хайх
-          </Button>
+          <DateRangePicker
+            startText="Эхлэх огноо"
+            endText="Дуусах огноо"
+            value={dateRange}
+            onChange={(newValue) => {
+              setDateRange(newValue);
+            }}
+            renderInput={(startProps, endProps) => (
+              <>
+                <TextField {...startProps} fullWidth size="small" sx={{ width: "200px" }} />
+                <Box sx={{ mx: 2 }}> - </Box>
+                <TextField {...endProps} fullWidth size="small" sx={{ width: "200px" }} />
+              </>
+            )}
+          />
         </Box> */}
       </Box>
       <Box sx={{ mt: 3 }}>
@@ -67,28 +89,13 @@ export const MovableListToolbar = (props) => {
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="row-radio-buttons-group"
+                  onChange={onChange}
+                  value={value}
                 >
-                  <FormControlLabel value="all" control={<Radio />} label="Бүгд" />
-                  <FormControlLabel value="personal" control={<Radio />} label="Хувь хүн" />
-                  <FormControlLabel value="organization" control={<Radio />} label="Байгууллага" />
+                  <FormControlLabel value="ALL" control={<Radio />} label="Бүгд" />
+                  <FormControlLabel value="INDIVIDUAL" control={<Radio />} label="Хувь хүн" />
+                  <FormControlLabel value="ORGANIZATION" control={<Radio />} label="Байгууллага" />
                 </RadioGroup>
-              </Grid>
-              <Grid item sx={{ maxWidth: 500 }}>
-                <DateRangePicker
-                  startText="Эхлэх огноо"
-                  endText="Дуусах огноо"
-                  value={dateRange}
-                  onChange={(newValue) => {
-                    setDateRange(newValue);
-                  }}
-                  renderInput={(startProps, endProps) => (
-                    <>
-                      <TextField {...startProps} fullWidth size="small" sx={{ width: "200px" }} />
-                      <Box sx={{ mx: 2 }}> - </Box>
-                      <TextField {...endProps} fullWidth size="small" sx={{ width: "200px" }} />
-                    </>
-                  )}
-                />
               </Grid>
             </Grid>
           </CardContent>

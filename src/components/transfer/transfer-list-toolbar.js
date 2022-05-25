@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -20,14 +20,54 @@ import { Search as SearchIcon } from "../../icons/search";
 import { Upload as UploadIcon } from "../../icons/upload";
 import { Download as DownloadIcon } from "../../icons/download";
 import { DateRangePicker } from "@mui/lab";
+import { useBill } from "src/context/BillContext";
 export const TransferListToolbar = (props) => {
   const [dateRange, setDateRange] = useState([null, null]);
+  const { setQuery } = useBill();
+  const [value, setValue] = useState("ALL");
   const [status, setStatus] = useState({
     new: false,
-    aborted: false,
-    less: false,
+    canceled: false,
+    incomplate: false,
+    transfered: false,
   });
-  console.log(status);
+  useEffect(() => {
+    setQuery(setQueryParam());
+  }, [value, status]);
+  const setQueryParam = () => {
+    let param = "?";
+    let filterParam = "";
+    switch (value) {
+      case "ORGANIZATION":
+        param = param + "organization=ORGANIZATION";
+        break;
+      case "ALL":
+        break;
+      case "INDIVIDUAL":
+        param = param + "organization=INDIVIDUAL";
+        break;
+    }
+    if (
+      value !== "ALL" &&
+      (status.new || status.canceled || status.incomplate || status.transfered)
+    ) {
+      param = param + "&";
+    }
+    if (status.new || status.canceled || status.incomplate || status.transfered) {
+      filterParam =
+        "status=" +
+        (status.new ? "NEW " : "") +
+        (status.canceled ? "CANCELED " : "") +
+        (status.incomplete ? "INCOMPLATE " : "") +
+        (status.transfered ? "TRANSFERED" : "");
+    }
+    param = param + filterParam;
+    if (param.length > 1) return param;
+    else return " ";
+  };
+  const onChange = (e) => {
+    setValue(e.target.value);
+  };
   return (
     <Box {...props}>
       <Box
@@ -42,7 +82,7 @@ export const TransferListToolbar = (props) => {
         <Typography sx={{ m: 1 }} variant="h4">
           Шилжүүлэх
         </Typography>
-        <Box sx={{ m: 1, display: "flex" }}>
+        {/* <Box sx={{ m: 1, display: "flex" }}>
           <DateRangePicker
             startText="Эхлэх огноо"
             endText="Дуусах огноо"
@@ -57,8 +97,8 @@ export const TransferListToolbar = (props) => {
                 <TextField {...endProps} fullWidth size="small" sx={{ width: "200px" }} />
               </>
             )}
-          />
-          {/* <Button
+          /> */}
+        {/* <Button
             color="primary"
             variant="contained"
             sx={{ ml: 1 }}
@@ -71,7 +111,7 @@ export const TransferListToolbar = (props) => {
           >
             хайх
           </Button> */}
-        </Box>
+        {/* </Box> */}
       </Box>
       <Box sx={{ mt: 3 }}>
         <Card>
@@ -82,16 +122,18 @@ export const TransferListToolbar = (props) => {
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="row-radio-buttons-group"
+                  onChange={onChange}
+                  value={value}
                 >
-                  <FormControlLabel value="all" control={<Radio />} label="Бүгд" />
-                  <FormControlLabel value="personal" control={<Radio />} label="Хувь хүн" />
-                  <FormControlLabel value="organization" control={<Radio />} label="Байгууллага" />
+                  <FormControlLabel value="ALL" control={<Radio />} label="Бүгд" />
+                  <FormControlLabel value="INDIVIDUAL" control={<Radio />} label="Хувь хүн" />
+                  <FormControlLabel value="ORGANIZATION" control={<Radio />} label="Байгууллага" />
                 </RadioGroup>
               </Grid>
 
               <Grid item sx={{ maxWidth: 500 }}>
                 <Button
-                  color="success"
+                  color="info"
                   variant="outlined"
                   sx={{ ml: 1 }}
                   size="small"
@@ -100,7 +142,7 @@ export const TransferListToolbar = (props) => {
                   <Checkbox
                     checked={status.new}
                     size="small"
-                    color="success"
+                    color="info"
                     sx={{ padding: 0 }}
                     inputProps={{ "aria-label": "controlled" }}
                   />
@@ -111,10 +153,10 @@ export const TransferListToolbar = (props) => {
                   variant="outlined"
                   sx={{ ml: 1 }}
                   size="small"
-                  onClick={() => setStatus({ ...status, less: !status.less })}
+                  onClick={() => setStatus({ ...status, incomplate: !status.incomplate })}
                 >
                   <Checkbox
-                    checked={status.less}
+                    checked={status.incomplate}
                     size="small"
                     color="warning"
                     sx={{ padding: 0 }}
@@ -127,16 +169,32 @@ export const TransferListToolbar = (props) => {
                   variant="outlined"
                   sx={{ ml: 1 }}
                   size="small"
-                  onClick={() => setStatus({ ...status, aborted: !status.aborted })}
+                  onClick={() => setStatus({ ...status, canceled: !status.canceled })}
                 >
                   <Checkbox
-                    checked={status.aborted}
+                    checked={status.canceled}
                     size="small"
                     color="error"
                     sx={{ padding: 0 }}
                     inputProps={{ "aria-label": "controlled" }}
                   />
                   Цуцлагдсан
+                </Button>
+                <Button
+                  color="success"
+                  variant="outlined"
+                  sx={{ ml: 1 }}
+                  size="small"
+                  onClick={() => setStatus({ ...status, transfered: !status.transfered })}
+                >
+                  <Checkbox
+                    checked={status.transfered}
+                    size="small"
+                    color="success"
+                    sx={{ padding: 0 }}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                  Шилжүүлсэн
                 </Button>
               </Grid>
             </Grid>

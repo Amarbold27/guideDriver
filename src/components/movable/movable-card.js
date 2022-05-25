@@ -2,120 +2,200 @@ import { format } from "date-fns";
 import { v4 as uuid } from "uuid";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import _ from "lodash";
 import {
   Box,
   Button,
   Card,
   CardHeader,
+  Divider,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   TableSortLabel,
+  TextField,
   Tooltip,
+  Typography,
+  Paper,
+  InputAdornment,
+  IconButton,
+  Zoom,
 } from "@mui/material";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { SeverityPill } from "../severity-pill";
+import { useState } from "react";
+import { moneySuffix, statusColor, statusName } from "src/utils/helper";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import { useFormik } from "formik";
+import { set } from "nprogress";
+import { toastify } from "../toastify/toastify";
+import { BillsList } from "../transfer/bills-list";
 
-const orders = [
-  {
-    id: uuid(),
-    ref: "Хөтөч",
-    bank: "хаан банк",
-    bankNumber: "5913207118",
-    createdAt: 1555016400000,
-    amount: 30.5,
-    customer: {
-      name: "Ekaterina Tankova",
-    },
-    status: "pending",
-    statusName: "Бүртгэл дутуу",
-  },
-  {
-    id: uuid(),
-    ref: "Жолооч",
-    bank: "хаан банк",
-    bankNumber: "5913207118",
-    createdAt: 1555016400000,
-    amount: 30.5,
-    customer: {
-      name: "Ekaterina Tankova",
-    },
-    status: "delivered",
-    statusName: "Шинэ",
-  },
-  {
-    id: uuid(),
-    ref: "Байгууллага",
-    bank: "хаан банк",
-    bankNumber: "5913207118",
-    createdAt: 1555016400000,
-    amount: 30.5,
-    customer: {
-      name: "Ekaterina Tankova",
-    },
-    status: "refunded",
-    statusName: "Цуцлагдсан",
-  },
-];
-
-export const MovableCard = (props) => (
-  <Card {...props} sx={{ my: 2 }}>
-    {/* <CardHeader title="Latest Orders" /> */}
-    <PerfectScrollbar>
-      <Box sx={{ minWidth: 800 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Тасаг</TableCell>
-              <TableCell>Билл</TableCell>
-              <TableCell sortDirection="desc">
-                <Tooltip enterDelay={300} title="Sort">
-                  <TableSortLabel active direction="desc">
-                    Огноо
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
-              <TableCell>Хямдарлын дүн</TableCell>
-              <TableCell>Хэмжээ</TableCell>
-              <TableCell>Нийт дүн</TableCell>
-              <TableCell>Биллийн дэлгэрэнгүй</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orders.map((order) => (
-              <TableRow hover key={order.id}>
-                <TableCell>{order.ref}</TableCell>
-                <TableCell>{order.customer.name}</TableCell>
-                <TableCell>{order.bank}</TableCell>
-                <TableCell>{order.bankNum}</TableCell>
-                <TableCell>{format(order.createdAt, "dd/MM/yyyy")}</TableCell>
-                <TableCell>{order.amount}</TableCell>
-                <TableCell>
-                  <Button endIcon={<OpenInNewIcon color="primary" />}>дэлгэрэнгүй</Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Box>
-    </PerfectScrollbar>
-    {/* <Box
-      sx={{
-        display: "flex",
-        justifyContent: "flex-end",
-        p: 2,
-      }}
-    >
-      <Button
-        color="primary"
-        endIcon={<ArrowRightIcon fontSize="small" />}
-        size="small"
-        variant="text"
-      >
-        View all
-      </Button>
-    </Box> */}
-  </Card>
-);
+export const MovableCard = ({ data }) => {
+  const [visible, setVisible] = useState(false);
+  const openModal = () => {
+    setVisible(true);
+  };
+  const closeModal = () => {
+    setVisible(false);
+  };
+  return (
+    <Card sx={{ my: 2 }}>
+      {visible && <BillsList data={data?.bills} visible={visible} close={closeModal} />}
+      <PerfectScrollbar>
+        <Box sx={{ minWidth: 800 }}>
+          {/* <Box sx={{ p: 2 }}>
+            <Button
+              size="small"
+              variant="contained"
+              endIcon={<OpenInNewIcon />}
+              onClick={openModal}
+            >
+              биллийн дэлгэрэнгүй
+            </Button>
+          </Box> */}
+          <TableContainer component={Paper}>
+            <Table size="small">
+              <TableHead
+                sx={{
+                  "& .MuiTableCell-root": {
+                    textAlign: "center",
+                    fontSize: "12px",
+                  },
+                }}
+              >
+                <TableCell></TableCell>
+                <TableCell>Банкны нэр</TableCell>
+                <TableCell>Дансны дугаар</TableCell>
+                <TableCell>Овог нэр</TableCell>
+                <TableCell>Татвар төлөгчийн дугаар</TableCell>
+                <TableCell>Утасны дугаар</TableCell>
+                <TableCell>Жуулчиний тоо</TableCell>
+                <TableCell>Хувь</TableCell>
+                <TableCell>Урамшууллын дүн</TableCell>
+              </TableHead>
+              <TableBody>
+                {data?.guideTransferId && (
+                  <TableRow
+                    hover
+                    sx={{
+                      "& .MuiTableCell-root": {
+                        borderBottom: "1px solid #d1d5db",
+                        textAlign: "center",
+                      },
+                    }}
+                  >
+                    <TableCell>{"Хөтөч"}</TableCell>
+                    <TableCell>{data?.guideTransfer.bankName ?? "-"}</TableCell>
+                    <TableCell>{data?.guideTransfer.bankAccount}</TableCell>
+                    <TableCell>
+                      {data?.guideTransfer.user.firstName + " " + data?.guideTransfer.user.lastName}
+                    </TableCell>
+                    <TableCell>{data?.guideTransfer.user.taxNumber}</TableCell>
+                    <TableCell>{data?.guideTransfer.user.mobile}</TableCell>
+                    <TableCell>{data?.touristCount}</TableCell>
+                    <TableCell sx={{ minWidth: 100 }}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        InputProps={{
+                          endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                        }}
+                        defaultValue={data.guideTransfer.percent}
+                        disabled
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        value={moneySuffix(data?.guideTransfer?.amount)}
+                        disabled
+                        size="small"
+                      />
+                    </TableCell>
+                  </TableRow>
+                )}
+                {data?.driverTransferId && (
+                  <TableRow
+                    hover
+                    sx={{
+                      "& .MuiTableCell-root": {
+                        borderBottom: "1px solid #d1d5db",
+                        textAlign: "center",
+                      },
+                    }}
+                  >
+                    <TableCell>{"Жолооч"}</TableCell>
+                    <TableCell>{data?.driverTransfer.user.bankName ?? "-"}</TableCell>
+                    <TableCell>{data?.driverTransfer.user.bankAccount}</TableCell>
+                    <TableCell>
+                      {data?.driverTransfer.user.firstName +
+                        " " +
+                        data?.driverTransfer.user.lastName}
+                    </TableCell>
+                    <TableCell>{data?.driverTransfer.user.taxNumber}</TableCell>
+                    <TableCell>{data?.driverTransfer.user.mobile}</TableCell>
+                    <TableCell>{data?.touristCount}</TableCell>
+                    <TableCell sx={{ minWidth: 100 }}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        InputProps={{
+                          endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                        }}
+                        defaultValue={data?.driverTransfer.percent}
+                        disabled
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        value={moneySuffix(data?.driverTransfer?.amount)}
+                        disabled
+                        size="small"
+                      />
+                    </TableCell>
+                  </TableRow>
+                )}
+                {data?.organizationTransferId && (
+                  <TableRow
+                    hover
+                    sx={{
+                      "& .MuiTableCell-root": {
+                        borderBottom: "1px solid #d1d5db",
+                        textAlign: "center",
+                      },
+                    }}
+                  >
+                    <TableCell>{"Байгууллага"}</TableCell>
+                    <TableCell colSpan={6}>
+                      {data?.organizationTransfer.organizationCode ?? "-"}
+                    </TableCell>
+                    <TableCell sx={{ minWidth: 100 }}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        InputProps={{
+                          endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                        }}
+                        defaultValue={data.organizationTransfer.percent}
+                        disabled
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        value={moneySuffix(data?.organizationTransfer?.amount)}
+                        disabled
+                        size="small"
+                      />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </PerfectScrollbar>
+    </Card>
+  );
+};
