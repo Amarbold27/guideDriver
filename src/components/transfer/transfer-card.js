@@ -51,14 +51,15 @@ export const TransferCard = ({ data }) => {
   };
   const openStatusModal = (t) => {
     //individual-baival
-    if (!data.organizationTransferId && t === "guide") {
+
+    if (t === "guide") {
       setAmount({
         ...amount,
         guide: (_.sumBy(data.bills, (o) => _.toInteger(o.promotionAmount)) / 100) * 4,
       });
       setValue({ ...value, guide: 4 });
     }
-    if (!data.organizationTransferId && t === "driver") {
+    if (t === "driver") {
       setAmount({
         ...amount,
         driver: (_.sumBy(data.bills, (o) => _.toInteger(o.promotionAmount)) / 100) * 4,
@@ -102,7 +103,7 @@ export const TransferCard = ({ data }) => {
         setSelectData({
           id: data.organizationTransferId,
           status: data?.organizationTransfer.status,
-          userId: data?.organizationTransfer.userId,
+          organizationCode: data?.organizationTransfer.organizationCode,
           bankAccount: data?.organizationTransfer?.user?.bankAccount,
         });
       } else {
@@ -114,6 +115,7 @@ export const TransferCard = ({ data }) => {
     setChangeStatusModal(false);
   };
   const onChangeGuide = (e) => {
+    // alert("asdas");
     let floatValues = /^[+-]?((\.\d+)|(\d+(\.\d+)?)|(\d+\.))$/;
     if (!e.target.value.match(floatValues)) {
       setError({ ...error, guide: true });
@@ -124,6 +126,12 @@ export const TransferCard = ({ data }) => {
       setValue({ ...value, guide: e.target.value });
       setHelperText({ ...helperText, guide: "" });
       setError({ ...error, guide: false });
+      console.log(
+        e.target.value,
+        data.bills,
+        (_.sumBy(data.bills, (o) => _.toInteger(o.promotionAmount)) / 100) *
+          _.toInteger(e.target.value)
+      );
       setAmount({
         ...amount,
         guide:
@@ -250,12 +258,7 @@ export const TransferCard = ({ data }) => {
                         value={value.guide}
                         onChange={onChangeGuide}
                         helperText={helperText.guide}
-                        disabled={
-                          data?.organizationTransferId &&
-                          ["NEW", "INCOMPLATE"].includes(data.guideTransfer.status)
-                            ? false
-                            : true
-                        }
+                        disabled={true}
                       />
                     </TableCell>
                     <TableCell>
@@ -305,12 +308,13 @@ export const TransferCard = ({ data }) => {
                         value={value.driver}
                         onChange={onChangeDriver}
                         helperText={helperText.driver}
-                        disabled={
-                          data?.organizationTransferId &&
-                          ["NEW", "INCOMPLATE"].includes(data?.driverTransfer.status)
-                            ? false
-                            : true
-                        }
+                        // disabled={
+                        //   data?.organizationTransferId &&
+                        //   ["NEW", "INCOMPLATE"].includes(data?.driverTransfer.status)
+                        //     ? false
+                        //     : true
+                        // }
+                        disabled={true}
                       />
                     </TableCell>
                     <TableCell>

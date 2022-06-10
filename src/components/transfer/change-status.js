@@ -25,14 +25,27 @@ export const ChangeStatus = ({ amount, percent, visible, close, selectData }) =>
     }),
     onSubmit: (value) => {
       if (value.status === "TRANSFERED") {
-        let reqData = {
-          status: value.status,
-          amount: amount,
-          percent: percent,
-          status: value.status,
-          userId: selectData.userId,
-          bankAccount: selectData.bankAccount,
-        };
+        let reqData = {};
+        if (selectData?.organizationCode) {
+          reqData = {
+            status: value.status,
+            amount: amount,
+            percent: percent,
+            status: value.status,
+            organizationCode: selectData.organizationCode,
+            bankAccount: selectData.bankAccount,
+          };
+        } else {
+          reqData = {
+            status: value.status,
+            amount: amount,
+            percent: percent,
+            status: value.status,
+            userId: selectData.userId,
+            bankAccount: selectData.bankAccount,
+          };
+        }
+
         percent
           ? saveTransfers(selectData.id, reqData)
           : toastify("WARNING", "Урамшууллын хувиа оруулна уу");
