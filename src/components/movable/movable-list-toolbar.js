@@ -49,7 +49,7 @@ export const MovableListToolbar = (props) => {
         }}
       >
         <Typography sx={{ m: 1 }} variant="h4">
-          Шилжүүлэх
+          Шилжүүлсэн
         </Typography>
         {/* <Box sx={{ m: 1, display: "flex" }}>
           <DateRangePicker

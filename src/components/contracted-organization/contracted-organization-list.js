@@ -194,8 +194,6 @@ export const ContractedOrganizationList = ({ data }) => {
               size="small"
               page={page}
               count={contractList?.pagination?.pageCount}
-              variant="outlined"
-              shape="rounded"
               onChange={handleChange}
             />
           )}

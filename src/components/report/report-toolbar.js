@@ -51,7 +51,7 @@ export const ReportToolbar = (props) => {
                     </SvgIcon>
                   }
                   size="small"
-                  // onClick={() => setIsSearch(!isSearch)}
+                  // onClick={() => setFIsSearch(!isSearch)}
                 >
                   хайх
                 </Button>

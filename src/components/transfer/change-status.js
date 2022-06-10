@@ -31,6 +31,7 @@ export const ChangeStatus = ({ amount, percent, visible, close, selectData }) =>
           percent: percent,
           status: value.status,
           userId: selectData.userId,
+          bankAccount: selectData.bankAccount,
         };
         percent
           ? saveTransfers(selectData.id, reqData)
@@ -43,6 +44,7 @@ export const ChangeStatus = ({ amount, percent, visible, close, selectData }) =>
           description: value.desc,
           status: value.status,
           userId: selectData.userId,
+          bankAccount: selectData.bankAccount,
         };
         saveTransfers(selectData.id, reqData);
       }

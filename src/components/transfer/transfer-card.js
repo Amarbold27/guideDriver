@@ -75,6 +75,7 @@ export const TransferCard = ({ data }) => {
           id: data.guideTransferId,
           status: data?.guideTransfer.status,
           userId: data?.guideTransfer.userId,
+          bankAccount: data?.guideTransfer?.user?.bankAccount,
         });
       } else {
         toastify("WARNING", "төлөв өөрчлөх боломжгүй. ");
@@ -88,6 +89,7 @@ export const TransferCard = ({ data }) => {
           id: data.driverTransferId,
           status: data?.driverTransfer.status,
           userId: data?.driverTransfer.userId,
+          bankAccount: data?.driverTransfer?.user?.bankAccount,
         });
       } else {
         toastify("WARNING", "төлөв өөрчлөх боломжгүй. ");
@@ -101,6 +103,7 @@ export const TransferCard = ({ data }) => {
           id: data.organizationTransferId,
           status: data?.organizationTransfer.status,
           userId: data?.organizationTransfer.userId,
+          bankAccount: data?.organizationTransfer?.user?.bankAccount,
         });
       } else {
         toastify("WARNING", "төлөв өөрчлөх боломжгүй. ");
@@ -227,8 +230,8 @@ export const TransferCard = ({ data }) => {
                     }}
                   >
                     <TableCell>{"Хөтөч"}</TableCell>
-                    <TableCell>{data?.guideTransfer.bankName ?? "-"}</TableCell>
-                    <TableCell>{data?.guideTransfer.bankAccount}</TableCell>
+                    <TableCell>{data?.guideTransfer.user.bankName ?? "-"}</TableCell>
+                    <TableCell>{data?.guideTransfer.user.bankAccount ?? "-"}</TableCell>
                     <TableCell>
                       {data?.guideTransfer.user.firstName + " " + data?.guideTransfer.user.lastName}
                     </TableCell>
@@ -281,7 +284,7 @@ export const TransferCard = ({ data }) => {
                   >
                     <TableCell>{"Жолооч"}</TableCell>
                     <TableCell>{data?.driverTransfer.user.bankName ?? "-"}</TableCell>
-                    <TableCell>{data?.driverTransfer.user.bankAccount}</TableCell>
+                    <TableCell>{data?.driverTransfer.user.bankAccount ?? "-"}</TableCell>
                     <TableCell>
                       {data?.driverTransfer.user.firstName +
                         " " +

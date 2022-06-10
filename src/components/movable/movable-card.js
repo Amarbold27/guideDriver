@@ -55,7 +55,8 @@ export const MovableCard = ({ data }) => {
               >
                 <TableCell></TableCell>
                 <TableCell>Банкны нэр</TableCell>
-                <TableCell>Дансны дугаар</TableCell>
+                <TableCell>Бүртгэлтэй дансны дугаар</TableCell>
+                <TableCell>Урамшуулал шилжүүлсэн дансны дугаар</TableCell>
                 <TableCell>Овог нэр</TableCell>
                 <TableCell>Татвар төлөгчийн дугаар</TableCell>
                 <TableCell>Утасны дугаар</TableCell>
@@ -75,8 +76,10 @@ export const MovableCard = ({ data }) => {
                     }}
                   >
                     <TableCell>{"Хөтөч"}</TableCell>
-                    <TableCell>{data?.guideTransfer.bankName ?? "-"}</TableCell>
-                    <TableCell>{data?.guideTransfer.bankAccount}</TableCell>
+                    <TableCell>{data?.guideTransfer.user.bankName ?? "-"}</TableCell>
+                    <TableCell>{data?.guideTransfer.user.bankAccount ?? "-"}</TableCell>
+
+                    <TableCell>{data?.guideTransfer.bankAccount ?? "-"}</TableCell>
                     <TableCell>
                       {data?.guideTransfer.user.firstName + " " + data?.guideTransfer.user.lastName}
                     </TableCell>
@@ -115,7 +118,8 @@ export const MovableCard = ({ data }) => {
                   >
                     <TableCell>{"Жолооч"}</TableCell>
                     <TableCell>{data?.driverTransfer.user.bankName ?? "-"}</TableCell>
-                    <TableCell>{data?.driverTransfer.user.bankAccount}</TableCell>
+                    <TableCell>{data?.driverTransfer.user.bankAccount ?? "-"}</TableCell>
+                    <TableCell>{data?.driverTransfer.bankAccount ?? "-"}</TableCell>
                     <TableCell>
                       {data?.driverTransfer.user.firstName +
                         " " +
@@ -155,7 +159,7 @@ export const MovableCard = ({ data }) => {
                     }}
                   >
                     <TableCell>{"Байгууллага"}</TableCell>
-                    <TableCell colSpan={6}>
+                    <TableCell colSpan={7}>
                       {data?.organizationTransfer.organizationCode ?? "-"}
                     </TableCell>
                     <TableCell sx={{ minWidth: 100 }}>

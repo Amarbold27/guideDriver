@@ -9,7 +9,7 @@ const AuthProvider = ({ children }) => {
     token: "",
   });
   const setUserAuthInfo = (data) => {
-    alert(data);
+    // alert(data);
     const token = localStorage.setItem("token", data);
     const ttt = localStorage.getItem("token");
     setAuthState({
