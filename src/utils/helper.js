@@ -10,7 +10,7 @@ export const statusName = (status) => {
       return "Дутуу";
     case "CANCELED":
       return "Цуцлагдсан";
-    case "TRANSFERED":
+    case "TRANSFERRED":
       return "Шилжүүлсэн";
   }
 };
@@ -22,7 +22,7 @@ export const statusColor = (status) => {
       return "warning";
     case "CANCELED":
       return "error";
-    case "TRANSFERED":
+    case "TRANSFERRED":
       return "success";
   }
 };

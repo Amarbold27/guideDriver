@@ -18,10 +18,11 @@ import { moneySuffix } from "src/utils/helper";
 import { useRouter } from "next/router";
 
 export const BillsList = ({ data, visible, close }) => {
+  console.log(data);
   const route = useRouter();
   return (
     <TDialog open={visible} onClose={close} maxWidth={"md"} fullWidth={true}>
-      <TDialogTitle onClose={close}>Биллийн дэлгэрэнгүй</TDialogTitle>
+      <TDialogTitle onClose={close}>Биллүүд</TDialogTitle>
       <TDialogContent>
         <Card sx={{ my: 2 }}>
           {/* <CardHeader title="Latest Orders" /> */}
@@ -38,7 +39,8 @@ export const BillsList = ({ data, visible, close }) => {
                 <TableCell>Худалдагч</TableCell>
                 <TableCell>Үндсэн үнэ</TableCell>
                 <TableCell>Хямдарсан үнэ</TableCell>
-                <TableCell>Нийт үнэ</TableCell>
+                <TableCell>Урамшуулал бодогдох дүн</TableCell>
+                <TableCell>Төлсөн дүн</TableCell>
                 <TableCell>Өдөр</TableCell>
               </TableHead>
               <TableBody>
@@ -70,6 +72,9 @@ export const BillsList = ({ data, visible, close }) => {
                       </TableCell>
                       <TableCell>
                         <Typography>{moneySuffix(el.DiscountAmount)}</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography>{moneySuffix(el.promotionAmount)}</Typography>
                       </TableCell>
                       <TableCell>
                         <Typography>{moneySuffix(el.Amount)}</Typography>

@@ -30,8 +30,8 @@ export const MovableListToolbar = (props) => {
         break;
     }
     if (value === "ALL") {
-      param = "?status=TRANSFERED";
-    } else param = param + "&status=TRANSFERED";
+      param = "?status=TRANSFERRED";
+    } else param = param + "&status=TRANSFERRED";
     return param;
   };
   const onChange = (e) => {

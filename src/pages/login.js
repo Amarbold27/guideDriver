@@ -44,6 +44,7 @@ const Login = () => {
           console.log(res.data);
           if (res.data.code === 200) {
             localStorage.setItem("userState", JSON.stringify(res.data.data));
+            localStorage.setItem("role", JSON.stringify(res.data.data.roleId));
             authContext.setAuthState(res.data.token);
             router.push("/");
           }

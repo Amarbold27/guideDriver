@@ -8,12 +8,11 @@ export const TransferList = () => {
   useEffect(() => {
     query && getPromotions(query);
   }, [query]);
-
   return (
     <PerfectScrollbar>
       {promotions &&
         promotions.data?.length > 0 &&
-        promotions.data.map((el) => <TransferCard data={el} />)}
+        promotions.data.map((el) => <TransferCard data={el} partnerOrg={promotions.partnerOrgs} />)}
     </PerfectScrollbar>
   );
 };

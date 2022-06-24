@@ -20,7 +20,7 @@ import format from "date-fns/format";
 export const TransferListToolbar = (props) => {
   const [dateRange, setDateRange] = useState([null, null]);
   const [isSearch, setIsSearch] = useState(false);
-  const { setQuery } = useBill();
+  const { setQuery, getPromotions, query } = useBill();
   const [value, setValue] = useState("ALL");
   const [status, setStatus] = useState({
     new: false,
@@ -56,7 +56,7 @@ export const TransferListToolbar = (props) => {
         (status.new ? "NEW " : "") +
         (status.canceled ? "CANCELED " : "") +
         (status.incomplate ? "INCOMPLATE " : "") +
-        (status.transfered ? "TRANSFERED" : "");
+        (status.transfered ? "TRANSFERRED" : "");
     }
     if (dateRange[0] && dateRange[1]) {
       if ((param + filterParam).length > 1) param = param + filterParam + "&";
@@ -202,6 +202,15 @@ export const TransferListToolbar = (props) => {
                     inputProps={{ "aria-label": "controlled" }}
                   />
                   Шилжүүлсэн
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="warning"
+                  onClick={() => query && getPromotions(query)}
+                >
+                  Шинэчлэх
                 </Button>
               </Grid>
             </Grid>

@@ -13,8 +13,11 @@ import { DateRangePicker } from "@mui/lab";
 import { useEffect, useState } from "react";
 import { Search as SearchIcon } from "../icons/search";
 import { DashboardProvider, useDashboard } from "src/context/DashboardContext";
+import { FactoryReportToolbar } from "src/components/factoryReport/factory-report-toolbar";
 const Dashboard = () => {
+  const [role, setrole] = useState();
   useEffect(() => {
+    setrole(localStorage.getItem("role"));
     getUserData();
     // return () => {
     //   second
@@ -22,7 +25,7 @@ const Dashboard = () => {
   }, []);
   const { userData, getUserData } = useDashboard();
 
-  return (
+  return role === "1" || role === "3" ? (
     <>
       <Head>
         <title>Хянах самбар | Хөтөч жолооч</title>
@@ -62,6 +65,24 @@ const Dashboard = () => {
             <LatestOrders />
           </Grid> */}
           </Grid>
+        </Container>
+      </Box>
+    </>
+  ) : (
+    <>
+      <Head>
+        <title>Тайлан| </title>
+      </Head>
+
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          py: 8,
+        }}
+      >
+        <Container maxWidth={false}>
+          <FactoryReportToolbar />
         </Container>
       </Box>
     </>

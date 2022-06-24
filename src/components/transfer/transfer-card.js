@@ -20,12 +20,13 @@ import {
 } from "@mui/material";
 import { SeverityPill } from "../severity-pill";
 import { BillsList } from "./bills-list";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { moneySuffix, statusColor, statusName } from "src/utils/helper";
 import { ChangeStatus } from "./change-status";
 import { toastify } from "../toastify/toastify";
+import moment from "moment";
 
-export const TransferCard = ({ data }) => {
+export const TransferCard = ({ data, partnerOrg }) => {
   const [visible, setVisible] = useState(false);
   const [changeStatusModal, setChangeStatusModal] = useState(false);
   const [value, setValue] = useState({
@@ -42,6 +43,18 @@ export const TransferCard = ({ data }) => {
   });
   const [selectData, setSelectData] = useState();
   const [isData, setIsData] = useState();
+  useEffect(() => {
+    if (data.guideTransferId) {
+      (amount.guide = (_.sumBy(data.bills, (o) => _.toInteger(o.promotionAmount)) / 100) * 4),
+        (value.guide = 4);
+    }
+    if (data.driverTransferId) {
+      (amount.driver = (_.sumBy(data.bills, (o) => _.toInteger(o.promotionAmount)) / 100) * 4),
+        (value.driver = 4);
+    }
+    setAmount({ ...amount });
+    setValue({ ...value });
+  }, []);
 
   const openModal = () => {
     setVisible(true);
@@ -52,24 +65,24 @@ export const TransferCard = ({ data }) => {
   const openStatusModal = (t) => {
     //individual-baival
 
-    if (t === "guide") {
-      setAmount({
-        ...amount,
-        guide: (_.sumBy(data.bills, (o) => _.toInteger(o.promotionAmount)) / 100) * 4,
-      });
-      setValue({ ...value, guide: 4 });
-    }
-    if (t === "driver") {
-      setAmount({
-        ...amount,
-        driver: (_.sumBy(data.bills, (o) => _.toInteger(o.promotionAmount)) / 100) * 4,
-      });
-      setValue({ ...value, driver: 4 });
-    }
+    // if (t === "guide") {
+    //   setAmount({
+    //     ...amount,
+    //     guide: (_.sumBy(data.bills, (o) => _.toInteger(o.promotionAmount)) / 100) * 4,
+    //   });
+    //   setValue({ ...value, guide: 4 });
+    // }
+    // if (t === "driver") {
+    //   setAmount({
+    //     ...amount,
+    //     driver: (_.sumBy(data.bills, (o) => _.toInteger(o.promotionAmount)) / 100) * 4,
+    //   });
+    //   setValue({ ...value, driver: 4 });
+    // }
 
     //organzination-baival
     if (t === "guide") {
-      if (!["TRANSFERED", "CANCELED"].includes(data?.guideTransfer.status)) {
+      if (!["TRANSFERRED", "CANCELED"].includes(data?.guideTransfer.status)) {
         setIsData(t);
         setChangeStatusModal(true);
         setSelectData({
@@ -83,7 +96,7 @@ export const TransferCard = ({ data }) => {
       }
     }
     if (t === "driver") {
-      if (!["TRANSFERED", "CANCELED"].includes(data?.driverTransfer.status)) {
+      if (!["TRANSFERRED", "CANCELED"].includes(data?.driverTransfer.status)) {
         setIsData(t);
         setChangeStatusModal(true);
         setSelectData({
@@ -97,7 +110,7 @@ export const TransferCard = ({ data }) => {
       }
     }
     if (t === "organization") {
-      if (!["TRANSFERED", "CANCELED"].includes(data?.organizationTransfer.status)) {
+      if (!["TRANSFERRED", "CANCELED"].includes(data?.organizationTransfer.status)) {
         setIsData(t);
         setChangeStatusModal(true);
         setSelectData({
@@ -195,15 +208,16 @@ export const TransferCard = ({ data }) => {
       {visible && <BillsList data={data?.bills} visible={visible} close={closeModal} />}
       <PerfectScrollbar>
         <Box sx={{ minWidth: 800 }}>
-          <Box sx={{ p: 2 }}>
+          <Box sx={{ p: 2, display: "flex", justifyContent: "space-between" }}>
             <Button
               size="small"
               variant="contained"
               endIcon={<OpenInNewIcon />}
               onClick={openModal}
             >
-              биллийн дэлгэрэнгүй
+              Бүртгэлэй биллүүд
             </Button>
+            <Typography variant="h6">{moment(data?.createdAt).format("YYYY-MM-DD")}</Typography>
           </Box>
           <TableContainer component={Paper}>
             <Table size="small">
@@ -219,7 +233,7 @@ export const TransferCard = ({ data }) => {
                 <TableCell>Банкны нэр</TableCell>
                 <TableCell>Дансны дугаар</TableCell>
                 <TableCell>Овог нэр</TableCell>
-                <TableCell>Татвар төлөгчийн дугаар</TableCell>
+                <TableCell>Регистерийн дугаар</TableCell>
                 <TableCell>Утасны дугаар</TableCell>
                 <TableCell>Жуулчиний тоо</TableCell>
                 <TableCell>Хувь</TableCell>
@@ -238,13 +252,15 @@ export const TransferCard = ({ data }) => {
                     }}
                   >
                     <TableCell>{"Хөтөч"}</TableCell>
-                    <TableCell>{data?.guideTransfer.user.bankName ?? "-"}</TableCell>
-                    <TableCell>{data?.guideTransfer.user.bankAccount ?? "-"}</TableCell>
+                    <TableCell>{data?.guideTransfer?.user?.bankName ?? "-"}</TableCell>
+                    <TableCell>{data?.guideTransfer?.user?.bankAccount ?? "-"}</TableCell>
                     <TableCell>
-                      {data?.guideTransfer.user.firstName + " " + data?.guideTransfer.user.lastName}
+                      {data?.guideTransfer?.user?.firstName +
+                        " " +
+                        data?.guideTransfer?.user?.lastName}
                     </TableCell>
-                    <TableCell>{data?.guideTransfer.user.taxNumber}</TableCell>
-                    <TableCell>{data?.guideTransfer.user.mobile}</TableCell>
+                    <TableCell>{data?.guideTransfer?.user?.rdNumber}</TableCell>
+                    <TableCell>{data?.guideTransfer?.user?.mobile}</TableCell>
                     <TableCell>{data?.touristCount}</TableCell>
                     <TableCell sx={{ minWidth: 100 }}>
                       <TextField
@@ -286,15 +302,15 @@ export const TransferCard = ({ data }) => {
                     }}
                   >
                     <TableCell>{"Жолооч"}</TableCell>
-                    <TableCell>{data?.driverTransfer.user.bankName ?? "-"}</TableCell>
-                    <TableCell>{data?.driverTransfer.user.bankAccount ?? "-"}</TableCell>
+                    <TableCell>{data?.driverTransfer?.user?.bankName ?? "-"}</TableCell>
+                    <TableCell>{data?.driverTransfer?.user?.bankAccount ?? "-"}</TableCell>
                     <TableCell>
-                      {data?.driverTransfer.user.firstName +
+                      {data?.driverTransfer?.user?.firstName +
                         " " +
-                        data?.driverTransfer.user.lastName}
+                        data?.driverTransfer?.user?.lastName}
                     </TableCell>
-                    <TableCell>{data?.driverTransfer.user.taxNumber}</TableCell>
-                    <TableCell>{data?.driverTransfer.user.mobile}</TableCell>
+                    <TableCell>{data?.driverTransfer?.user?.rdNumber}</TableCell>
+                    <TableCell>{data?.driverTransfer?.user?.mobile}</TableCell>
                     <TableCell>{data?.touristCount}</TableCell>
                     <TableCell sx={{ minWidth: 100 }}>
                       <TextField
@@ -343,7 +359,17 @@ export const TransferCard = ({ data }) => {
                   >
                     <TableCell>{"Байгууллага"}</TableCell>
                     <TableCell colSpan={6}>
-                      {data?.organizationTransfer.organizationCode ?? "-"}
+                      {data?.organizationTransfer.organizationCode &&
+                      partnerOrg &&
+                      partnerOrg.length > 0
+                        ? partnerOrg.find((o) => {
+                            if (
+                              parseInt(o.id) ===
+                              parseInt(data?.organizationTransfer.organizationCode)
+                            )
+                              return o;
+                          })?.companyName
+                        : "-"}
                     </TableCell>
                     <TableCell sx={{ minWidth: 100 }}>
                       <TextField

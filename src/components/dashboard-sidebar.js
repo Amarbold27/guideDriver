@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -14,7 +14,7 @@ import { NavItem } from "./nav-item";
 import Gobi from "../icons/gobi.png";
 import { AuthContext } from "src/context/auth-context";
 import Report from "src/pages/report";
-const itemsToken = [
+const itemsTokenRole1 = [
   {
     href: "/",
     icon: <ChartBarIcon fontSize="small" />,
@@ -69,11 +69,41 @@ const itemsToken = [
   // },
 ];
 
+const itemsTokenRole3 = [
+  {
+    href: "/",
+    icon: <ChartBarIcon fontSize="small" />,
+    title: "Хянах самбар",
+  },
+  {
+    href: "/transfer",
+    icon: <UsersIcon fontSize="small" />,
+    title: "Шилжүүлэх",
+  },
+  {
+    href: "/movable",
+    icon: <ShoppingBagIcon fontSize="small" />,
+    title: "Шилжүүлсэн",
+  },
+
+  // {
+  //   href: "/contracted-organization",
+  //   icon: <ContractIcon fontSize="small" />,
+  //   title: "Гэрээт байгууллага",
+  // },
+];
+const itemsTokenRole2 = [
+  {
+    href: "/",
+    icon: <ReportIcon fontSize="small" />,
+    title: "Тайлан",
+  },
+];
 export const DashboardSidebar = (props) => {
   const { open, onClose } = props;
   const authContext = useContext(AuthContext);
   const router = useRouter();
-
+  const [role, setRole] = useState();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"), {
     defaultMatches: true,
     noSsr: false,
@@ -81,6 +111,7 @@ export const DashboardSidebar = (props) => {
 
   useEffect(
     () => {
+      setRole(localStorage.getItem("role"));
       const ISSERVER = typeof window === "undefined";
       if (!ISSERVER) {
         console.log(JSON.parse(localStorage.getItem("userState")));
@@ -101,6 +132,7 @@ export const DashboardSidebar = (props) => {
     localStorage.clear();
     router.push("/login");
   };
+
   const content = (
     <>
       <Box
@@ -136,9 +168,18 @@ export const DashboardSidebar = (props) => {
           }}
         />
         <Box sx={{ flexGrow: 1 }}>
-          {itemsToken.map((item) => (
-            <NavItem key={item.title} icon={item.icon} href={item.href} title={item.title} />
-          ))}
+          {role === "1" &&
+            itemsTokenRole1.map((item) => (
+              <NavItem key={item.title} icon={item.icon} href={item.href} title={item.title} />
+            ))}
+          {role === "2" &&
+            itemsTokenRole2.map((item) => (
+              <NavItem key={item.title} icon={item.icon} href={item.href} title={item.title} />
+            ))}
+          {role === "3" &&
+            itemsTokenRole3.map((item) => (
+              <NavItem key={item.title} icon={item.icon} href={item.href} title={item.title} />
+            ))}
         </Box>
         <Divider sx={{ borderColor: "#2D3748" }} />
         <Box

@@ -12,19 +12,21 @@ export const ChangeStatus = ({ amount, percent, visible, close, selectData }) =>
   const status = [
     { name: "Дутуу", value: "INCOMPLATE" },
     { name: "Цуцлагдсан", value: "CANCELED" },
-    { name: "Шилжүүлсэн", value: "TRANSFERED" },
+    { name: "Шилжүүлсэн", value: "TRANSFERRED" },
   ];
   const formik = useFormik({
     initialValues: {
       status: "",
       desc: "",
+      bankAccount: selectData.bankAccount,
     },
     validationSchema: Yup.object({
       status: Yup.string().required("төлөв сонгоно уу"),
       desc: Yup.string().max(150, "Тэмдэгтийн хязгаар хэтэрлээ"),
+      bankAccount: Yup.string().max(20, "Тэмдэгтийн хязгаар хэтэрлээ"),
     }),
     onSubmit: (value) => {
-      if (value.status === "TRANSFERED") {
+      if (value.status === "TRANSFERRED") {
         let reqData = {};
         if (selectData?.organizationCode) {
           reqData = {
@@ -33,7 +35,7 @@ export const ChangeStatus = ({ amount, percent, visible, close, selectData }) =>
             percent: percent,
             status: value.status,
             organizationCode: selectData.organizationCode,
-            bankAccount: selectData.bankAccount,
+            bankAccount: value.bankAccount,
           };
         } else {
           reqData = {
@@ -42,14 +44,14 @@ export const ChangeStatus = ({ amount, percent, visible, close, selectData }) =>
             percent: percent,
             status: value.status,
             userId: selectData.userId,
-            bankAccount: selectData.bankAccount,
+            bankAccount: value.bankAccount,
           };
         }
-
-        percent
-          ? saveTransfers(selectData.id, reqData)
-          : toastify("WARNING", "Урамшууллын хувиа оруулна уу");
-      } else if (value.status !== "TRANSFERED" && value.desc === "") {
+        if (percent && value.bankAccount) saveTransfers(selectData.id, reqData);
+        else if (!percent) toastify("WARNING", "Урамшууллын хувиа оруулна уу");
+        else if (!value.bankAccount)
+          toastify("WARNING", "Урамшуулал хүлээн авах дансаа оруулна уу");
+      } else if (value.status !== "TRANSFERRED" && value.desc === "") {
         toastify("WARNING", "Тайлбар хэсгийг бөглөнө үү.");
       } else {
         let reqData = {
@@ -68,7 +70,7 @@ export const ChangeStatus = ({ amount, percent, visible, close, selectData }) =>
       <TDialogTitle onClose={close}>Төлөв өөрчлөх</TDialogTitle>
       <form onSubmit={formik.handleSubmit}>
         <TDialogContent>
-          <Grid container>
+          <Grid container spacing={2}>
             <Grid item xs={12}>
               <Select
                 fullWidth
@@ -90,8 +92,24 @@ export const ChangeStatus = ({ amount, percent, visible, close, selectData }) =>
                 })}
               </Select>
             </Grid>
-            {formik.values.status !== "TRANSFERED" && (
-              <Grid item xs={12} sx={{ mt: 2 }}>
+            {formik.values.status === "TRANSFERRED" && (
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  error={Boolean(formik.touched.bankAccount && formik.errors.bankAccount)}
+                  helperText={formik.touched.bankAccount && formik.errors.bankAccount}
+                  label="Дансны дугаар"
+                  margin="normal"
+                  name="bankAccount"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  value={formik.values.bankAccount}
+                  variant="outlined"
+                />
+              </Grid>
+            )}
+            {formik.values.status !== "TRANSFERRED" && (
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   placeholder="Энд тайлбар бичнэ"

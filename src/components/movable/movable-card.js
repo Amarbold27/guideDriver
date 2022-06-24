@@ -76,15 +76,17 @@ export const MovableCard = ({ data }) => {
                     }}
                   >
                     <TableCell>{"Хөтөч"}</TableCell>
-                    <TableCell>{data?.guideTransfer.user.bankName ?? "-"}</TableCell>
-                    <TableCell>{data?.guideTransfer.user.bankAccount ?? "-"}</TableCell>
+                    <TableCell>{data?.guideTransfer?.user?.bankName ?? "-"}</TableCell>
+                    <TableCell>{data?.guideTransfer?.user?.bankAccount ?? "-"}</TableCell>
 
                     <TableCell>{data?.guideTransfer.bankAccount ?? "-"}</TableCell>
                     <TableCell>
-                      {data?.guideTransfer.user.firstName + " " + data?.guideTransfer.user.lastName}
+                      {data?.guideTransfer?.user?.firstName +
+                        " " +
+                        data?.guideTransfer?.user?.lastName}
                     </TableCell>
-                    <TableCell>{data?.guideTransfer.user.taxNumber}</TableCell>
-                    <TableCell>{data?.guideTransfer.user.mobile}</TableCell>
+                    <TableCell>{data?.guideTransfer?.user.taxNumber}</TableCell>
+                    <TableCell>{data?.guideTransfer?.user.mobile}</TableCell>
                     <TableCell>{data?.touristCount}</TableCell>
                     <TableCell sx={{ minWidth: 100 }}>
                       <TextField
@@ -117,16 +119,16 @@ export const MovableCard = ({ data }) => {
                     }}
                   >
                     <TableCell>{"Жолооч"}</TableCell>
-                    <TableCell>{data?.driverTransfer.user.bankName ?? "-"}</TableCell>
-                    <TableCell>{data?.driverTransfer.user.bankAccount ?? "-"}</TableCell>
+                    <TableCell>{data?.driverTransfer?.user?.bankName ?? "-"}</TableCell>
+                    <TableCell>{data?.driverTransfer?.user?.bankAccount ?? "-"}</TableCell>
                     <TableCell>{data?.driverTransfer.bankAccount ?? "-"}</TableCell>
                     <TableCell>
-                      {data?.driverTransfer.user.firstName +
+                      {data?.driverTransfer?.user?.firstName +
                         " " +
-                        data?.driverTransfer.user.lastName}
+                        data?.driverTransfer?.user?.lastName}
                     </TableCell>
-                    <TableCell>{data?.driverTransfer.user.taxNumber}</TableCell>
-                    <TableCell>{data?.driverTransfer.user.mobile}</TableCell>
+                    <TableCell>{data?.driverTransfer?.user?.taxNumber}</TableCell>
+                    <TableCell>{data?.driverTransfer?.user?.mobile}</TableCell>
                     <TableCell>{data?.touristCount}</TableCell>
                     <TableCell sx={{ minWidth: 100 }}>
                       <TextField
