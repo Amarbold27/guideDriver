@@ -12,6 +12,10 @@ export const statusName = (status) => {
       return "Цуцлагдсан";
     case "TRANSFERRED":
       return "Шилжүүлсэн";
+    case "ETRANSFERRED":
+      return "Ибаримт илгээсэн";
+    case "EWRITTEN":
+      return "Ибаримт шивсэн";
   }
 };
 export const statusColor = (status) => {
@@ -24,5 +28,9 @@ export const statusColor = (status) => {
       return "error";
     case "TRANSFERRED":
       return "success";
+    case "ETRANSFERRED":
+      return "info";
+    case "EWRITTEN":
+      return "warning";
   }
 };

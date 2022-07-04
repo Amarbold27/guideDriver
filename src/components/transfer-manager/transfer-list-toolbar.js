@@ -27,6 +27,8 @@ export const TransferListToolbar = (props) => {
     canceled: false,
     incomplate: false,
     transfered: false,
+    ewritten: false,
+    etransferred: false,
   });
   useEffect(() => {
     setQuery(setQueryParam());
@@ -44,10 +46,34 @@ export const TransferListToolbar = (props) => {
         param = param + "organization=INDIVIDUAL";
         break;
     }
-    if (value !== "ALL") {
+    if (
+      value !== "ALL" &&
+      (status.new ||
+        status.canceled ||
+        status.incomplate ||
+        status.transfered ||
+        status.etransferred ||
+        status.ewritten)
+    ) {
       param = param + "&";
     }
-    filterParam = "status=" + "ETRANSFERRED TRANSFERRED";
+    if (
+      status.new ||
+      status.canceled ||
+      status.incomplate ||
+      status.transfered ||
+      status.etransferred ||
+      status.ewritten
+    ) {
+      filterParam =
+        "status=" +
+        (status.new ? "NEW " : "") +
+        (status.canceled ? "CANCELED " : "") +
+        (status.incomplate ? "INCOMPLATE " : "") +
+        (status.transfered ? "TRANSFERRED " : "") +
+        (status.ewritten ? "EWRITTEN " : "") +
+        (status.etransferred ? "ETRANSFERRED" : "");
+    }
     if (dateRange[0] && dateRange[1]) {
       if ((param + filterParam).length > 1) param = param + filterParam + "&";
       else param = param + filterParam;
@@ -128,7 +154,16 @@ export const TransferListToolbar = (props) => {
                 </RadioGroup>
               </Grid>
 
-              {/* <Grid item sx={{ maxWidth: 500 }}>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="warning"
+                  onClick={() => query && getPromotions(query)}
+                >
+                  Шинэчлэх
+                </Button>
+              </Grid>
+              <Grid item xs={12} sx={{ mt: 2 }}>
                 <Button
                   color="info"
                   variant="outlined"
@@ -178,6 +213,39 @@ export const TransferListToolbar = (props) => {
                   Цуцлагдсан
                 </Button>
                 <Button
+                  color="warning"
+                  variant="outlined"
+                  sx={{ ml: 1 }}
+                  size="small"
+                  onClick={() => setStatus({ ...status, ewritten: !status.ewritten })}
+                >
+                  <Checkbox
+                    checked={status.ewritten}
+                    size="small"
+                    color="warning"
+                    sx={{ padding: 0 }}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                  Ибаримт шивсэн
+                </Button>
+                <Button
+                  color="success"
+                  variant="outlined"
+                  sx={{ ml: 1 }}
+                  size="small"
+                  onClick={() => setStatus({ ...status, etransferred: !status.etransferred })}
+                >
+                  <Checkbox
+                    checked={status.etransferred}
+                    size="small"
+                    color="success"
+                    sx={{ padding: 0 }}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                  Ибаримт илгээсэн
+                </Button>
+
+                <Button
                   color="success"
                   variant="outlined"
                   sx={{ ml: 1 }}
@@ -192,15 +260,6 @@ export const TransferListToolbar = (props) => {
                     inputProps={{ "aria-label": "controlled" }}
                   />
                   Шилжүүлсэн
-                </Button>
-              </Grid> */}
-              <Grid item>
-                <Button
-                  variant="contained"
-                  color="warning"
-                  onClick={() => query && getPromotions(query)}
-                >
-                  Шинэчлэх
                 </Button>
               </Grid>
             </Grid>

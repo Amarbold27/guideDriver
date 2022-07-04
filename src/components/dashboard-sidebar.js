@@ -76,7 +76,7 @@ const itemsTokenRole3 = [
     title: "Хянах самбар",
   },
   {
-    href: "/transfer",
+    href: "/transfer-manager",
     icon: <UsersIcon fontSize="small" />,
     title: "Шилжүүлэх",
   },
