@@ -28,8 +28,8 @@ const Login = () => {
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
   const formik = useFormik({
     initialValues: {
-      phoneNum: "12345671",
-      password: "123456",
+      phoneNum: "",
+      password: "",
     },
     validationSchema: Yup.object({
       phoneNum: Yup.string()

@@ -45,8 +45,8 @@ export const FactoryReportToolbar = (props) => {
   const PER_PAGE = 10;
   const _DATA = usePagination(knittingCostData, PER_PAGE);
   useEffect(() => {
-    getFactorySewncost();
-    getKnittingCost();
+    // getFactorySewncost();
+    // getKnittingCost();
 
     return () => {};
   }, []);
